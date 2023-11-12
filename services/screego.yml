@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  screego:
+    image: screego/server:1
+    restart: unless-stopped
+    network_mode: host
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.screego.rule=Host(`screen.fos.gg`)
+      - traefik.http.routers.screego.entrypoints=websecure
+      - traefik.http.routers.screego.tls=true
+      - traefik.http.routers.screego.tls.certresolver=letsencrypt
+      - traefik.http.services.screego.loadbalancer.server.port=5050
+      - traefik.http.routers.screego.middlewares=compress
+    volumes:
+      - ./htpasswd:/etc/screego.passwd:ro
+    environment:
+      SCREEGO_EXTERNAL_IP: "138.2.153.89"
+      SCREEGO_TRUST_PROXY_HEADERS: "true"
+      SCREEGO_AUTH_MODE: 'none'
+      SCREEGO_CLOSE_ROOM_WHEN_OWNER_LEAVES: 'false'
+      SCREEGO_TURN_PORT_RANGE: '50000:51000'
