@@ -31,25 +31,23 @@ services:
       - --certificatesresolvers.letsencrypt.acme.storage=acme/acme.json
       - --certificatesresolvers.letsencrypt.acme.dnsChallenge.provider=cloudflare
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /run/podman/podman.sock:/var/run/docker.sock:ro
       - acme-data:/acme
     networks:
       - traefik
-    extra_hosts:
-      host.docker.internal: 172.17.0.1
 
   watchtower:
     image: containrrr/watchtower:latest
     restart: unless-stopped
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /run/podman/podman.sock:/var/run/docker.sock
 
   backup:
     image: restic/restic:latest
     restart: unless-stopped
     volumes:
       - restic-config:/root
-      - /var/lib/docker/volumes:/volumes:ro
+      - /var/lib/containers/storage/volumes:/volumes:ro
     network_mode: host
     environment:
       RESTIC_REPOSITORY: ${RESTIC_REPOSITORY}
@@ -68,11 +66,10 @@ services:
     restart: unless-stopped
     command: daemon --docker
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /run/podman/podman.sock:/var/run/docker.sock:ro
 volumes:
   acme-data:
   restic-config:
 
 networks:
   traefik:
-    external: true

@@ -37,7 +37,6 @@ services:
       - traefik
     labels:
       - traefik.http.middlewares.compress.compress=true
-
       - traefik.enable=true
       - traefik.http.routers.wakapi.rule=Host(`time.fos.gg`)
       - traefik.http.routers.wakapi.entrypoints=websecure
@@ -48,7 +47,6 @@ services:
 volumes:
   wakapi-mysql:
     name: shea_wakapi-mysql
-    external: true
 
 networks:
   wakapi:
