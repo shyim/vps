@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: thelounge
+  namespace: thelounge
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: thelounge
+  template:
+    metadata:
+      labels:
+        app: thelounge
+    spec:
+      containers:
+        - image: thelounge/thelounge:latest
+          name: thelounge
+          volumeMounts:
+            - mountPath: /var/opt/thelounge
+              name: thelounge
+          resources: {}
+      restartPolicy: Always
+      volumes:
+        - name: thelounge
+          persistentVolumeClaim:
+            claimName: thelounge

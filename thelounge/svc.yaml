@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: thelounge
+  namespace: thelounge
+spec:
+  selector:
+    app: thelounge
+  ports:
+    - port: 9000
+      targetPort: 9000

@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: screego
+  namespace: screego
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: screego
+  template:
+    metadata:
+      labels:
+        app: screego
+    spec:
+      hostNetwork: true
+      containers:
+        - env:
+            - name: SCREEGO_AUTH_MODE
+              value: none
+            - name: SCREEGO_CLOSE_ROOM_WHEN_OWNER_LEAVES
+              value: "false"
+            - name: SCREEGO_EXTERNAL_IP
+              value: dns:screen.fos.gg
+            - name: SCREEGO_TRUST_PROXY_HEADERS
+              value: "true"
+            - name: SCREEGO_TURN_PORT_RANGE
+              value: 50000:51000
+          image: screego/server:1
+          name: screego
+          resources: {}
+      restartPolicy: Always

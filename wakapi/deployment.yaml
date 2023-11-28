@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wakapi
+  namespace: wakapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wakapi
+  template:
+    metadata:
+      labels:
+        app: wakapi
+    spec:
+      containers:
+        - image: ghcr.io/muety/wakapi:latest
+          name: wakapi
+          env:
+            - name: ENVIRONMENT
+              value: "prod"
+            - name: WAKAPI_PASSWORD_SALT
+              value: ""
+            - name: WAKAPI_DB_HOST
+              value: mysql
+            - name: WAKAPI_DB_PORT
+              value: "3306"
+            - name: WAKAPI_DB_USER
+              value: wakapi
+            - name: WAKAPI_DB_PASSWORD
+              value: wakapi
+            - name: WAKAPI_DB_NAME
+              value: wakapi
+            - name: WAKAPI_DB_TYPE
+              value: mysql
+            - name: WAKAPI_MAIL_ENABLED
+              value: "true"
+            - name: WAKAPI_MAIL_PROVIDER
+              value: smtp
+            - name: WAKAPI_MAIL_SENDER
+              value: "Wakapi <contact@fos.gg>"
+            - name: WAKAPI_MAIL_SMTP_HOST
+              value: smtp.mail.me.com
+            - name: WAKAPI_MAIL_SMTP_PORT
+              value: "587"
+            - name: WAKAPI_MAIL_SMTP_USER
+              value: "s.sayakci@icloud.com"
+          envFrom:
+            - secretRef:
+                name: wakapi-1password
+          resources: {}
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wakapi-svc
+  namespace: wakapi
+spec:
+  selector:
+    app: wakapi
+  ports:
+    - port: 3000
+      targetPort: 3000

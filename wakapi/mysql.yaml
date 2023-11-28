@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  namespace: wakapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - image: mysql
+          name: mysql
+          env:
+            - name: MYSQL_RANDOM_ROOT_PASSWORD
+              value: "1"
+            - name: MYSQL_USER
+              value: wakapi
+            - name: MYSQL_PASSWORD
+              value: wakapi
+            - name: MYSQL_DATABASE
+              value: wakapi
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: mysql
+          resources: {}
+      restartPolicy: Always
+      volumes:
+        - name: mysql
+          persistentVolumeClaim:
+            claimName: mysql
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+  namespace: wakapi
+spec:
+  selector:
+    app: mysql
+  ports:
+    - port: 3306
+      targetPort: 3306

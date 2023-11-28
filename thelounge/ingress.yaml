@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: thelounge
+  namespace: thelounge
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - irc.shyim.de
+      secretName: thelounge-tls
+  rules:
+    - host: irc.shyim.de
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: thelounge
+                port:
+                  number: 9000
