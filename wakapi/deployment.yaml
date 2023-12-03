@@ -21,16 +21,6 @@ spec:
               value: "prod"
             - name: WAKAPI_PASSWORD_SALT
               value: ""
-            - name: WAKAPI_DB_HOST
-              value: mysql
-            - name: WAKAPI_DB_PORT
-              value: "3306"
-            - name: WAKAPI_DB_USER
-              value: wakapi
-            - name: WAKAPI_DB_PASSWORD
-              value: wakapi
-            - name: WAKAPI_DB_NAME
-              value: wakapi
             - name: WAKAPI_DB_TYPE
               value: mysql
             - name: WAKAPI_MAIL_ENABLED
