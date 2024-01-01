@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: frosh-api
+  namespace: frosh-api
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - api.friendsofshopware.com
+      secretName: frosh-api-tls
+  rules:
+    - host: api.friendsofshopware.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frosh-api-svc
+                port:
+                  number: 8080

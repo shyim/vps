@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frosh-api
+  namespace: frosh-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frosh-api
+  template:
+    metadata:
+      labels:
+        app: frosh-api
+    spec:
+      containers:
+        - image: ghcr.io/friendsofshopware/frosh-api:latest
+          name: frosh-api
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: frosh-api-1password
+          resources: {}
+      restartPolicy: Always
