@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sw-demo
+  namespace: sw-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sw-demo
+  template:
+    metadata:
+      labels:
+        app: sw-demo
+    spec:
+      containers:
+        - image: ghcr.io/friendsofshopware/shopware-demo-environment:6.5.8
+          name: shopware
+          ports:
+            - containerPort: 8000
+          env:
+            - name: APP_URL
+              value: https://demo.fos.gg
+            - name: EXTENSIONS
+              value: "frosh/tools:*"
+            - name: TRUSTED_PROXIES
+              value: 'REMOTE_ADDR'
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sw-demo-svc
+  namespace: sw-demo
+spec:
+  selector:
+    app: sw-demo
+  ports:
+    - port: 8000
+      targetPort: 8000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sw-demo
+  namespace: sw-demo
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - demo.fos.gg
+      secretName: sw-demo-tls
+  rules:
+    - host: demo.fos.gg
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: sw-demo-svc
+                port:
+                  number: 8000
